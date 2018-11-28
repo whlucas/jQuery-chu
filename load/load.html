@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ajax</title>
+    </head>
+    <body>
+        <input type="button" value="异步加载数据">
+        <div id="box"></div>
+        <script src="./jQuery2.0.3.js"></script>
+        <script>         
+            // load方法
+            // 把静态资源加载到页面当中的指定位置,用来加载页面
+            
+            $("inqut").click(function(){
+                
+
+                $("#box").load("./loadData.html", function(response, status, xhr) { // 第一个参数是url,第二个参数是一个回调函数.里面有三个参数(a,b,c),当加载完成后触发
+                    console.log(response);  // 加载的内容
+                    console.log(status);  // 成功还是失败, 可以通过这个值来判断是否进行下一步操作
+                    console.log(xhr);  // jquery版的XMLHttpRequest对象, 这个上面有很多属性比如xhr.response, xhr.status
+                }); 
+
+                $("#box").load("./loadData.html ol", function() {}); // 我可以通过在地址栏的后面添加空格的方式来筛选我想要加载的东西,比如我在这里加了一个空格ol,则它就只会加载ol里面的东西
+            })
+
+            // get传参和post传参
+            // get传参有一个2kb的大小限制,而post没有
+            // get传参不安全,post相对来说要安全一点
+
+            $(function(){ //jq里面传函数表示这个函数在dom树建立好了之后执行
+                // 我在传url的时候在后面用?的形式拼接上数据,这种方式是用get的形式来发送数据,在后端要用get方式来接收数据,用于判断
+                $("#box").load("./load.php?url=dy", {"dy":"hello"}) ;
+                
+                // 如果我想用post的方式传数据就不能直接写在url的后面了,就如同我post传数据要放到send里面一样,在这里我要写在第二个参数里面,在后端就要用post的方式去接收
+                $("#box").load("./load.php", {"dy":"hello"}, function() {}); 
+            })
+
+
+        </script>
+    </body>
+</html>

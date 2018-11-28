@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="button" value="异步加载数据">
+    <div id="box"></div>
+    <script src="jQuery2.0.3.js"></script>
+    <script>
+        // 这两个方法就不用指定某个元素了直接$,就可以调用
+        // 用于静态的获取,因为参数有局限性,动态的话不是很好处理
+        
+
+        // get
+    
+        // 实现原理都是通过传参数来调用最底层的ajax
+        $("input").click(function(){
+            $.get('get.php?url=dy',function(response, status, xml){
+                // alert(1);
+                $("#box").html(response); //把结果添加进去
+            });
+        })
+
+        // 第二种传参方试,不在后面拼接了,直接用字符串的形式写成第二个参数,这样他就直接我给拼接到url的后面
+        $("input").click(function(){
+            $.get('get.php',"url=dy",function(response, status, xml){
+                // alert(1);
+                $("#box").html(response); //把结果添加进去
+            });
+        })
+
+        // 第三种传参方试,直接用对象的形式写第二个参数,也能给我自动的拼接到url的后面 
+        $("input").click(function(){
+            $.get('get.php', {url:"dy"}, function(response, status, xml){
+                // alert(1);
+                $("#box").html(response); //把结果添加进去
+            });
+        })
+
+
+        // post
+
+        // POST不能使用?直接拼在url的后面传参,可以用上面的第二种方式或者第三种方式来传参
+        $("input").click(function(){
+            $.post('post.php',"url=dy",function(response, status, xml){
+                // alert(1);
+                $("#box").html(response); //把结果添加进去
+            });
+        })
+
+
+
+
+        // get的post方法的第四个参数,表示返回我内容的格式
+
+        $("input").click(function(){
+            $.post('post.php',"url=dy",function(response, status, xml){
+                $("#box").html(response); 
+            },'html');
+        }) // 这里第四个参数写html和不写是一样的,因为php文件返回的数据是纯文本
+
+
+        // $("input").click(function(){
+        //     $.post('post.php',"url=dy",function(response, status, xml){
+        //         $("#box").html(response); 
+        //     });
+        // },'xml') // 这里我写的是xml,或者写一个jsonp是不行的
+
+        // 如果我接收的数据是xml的,那他自动这里就给你默认填一个xml,但是如果我这里改成html,则他就会给你返回的很怪,不好
+        // 如果后端给我返回的是json格式的我这里强行给他改成html,那他给你返回的数据很奇怪
+        
+        // 比如我这里请求的是一个json数据,我强行把接收的数据装换成html,这样他给我返回的就是一个字符串而不是json对象,我就没法操作里面的东西了,所以不能写html,一般都是只能判断的,除非我要看里面的格式,连着括号什么的全都打出来
+        $("input").click(function(){
+            $.post('text.json',function(response, status, xml){
+                console.log(response[0].url)
+            },'html');
+        });
+
+        
+        // getJSON
+        // 指明了要json就不用第四个参数了
+        $("input").click(function(){
+            $.getJSON('text.json',function(response, status, xml){
+                console.log(response[0].url)
+            }); // 在后面加了最后一个参数也没有用,因为已经固定好了,安全性要稍微高一点
+        });
+
+        // getScript
+        // 在指定状况下加载js
+        $("input").click(function(){
+            $.getScript('text.js',function(response, status, xml){}); 
+        });
+    </script>
+</body>
+</html>

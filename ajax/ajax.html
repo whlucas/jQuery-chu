@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .loading{
+            display: none;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+    <form action="">
+        用户名:<input type="text" name="user">
+        邮件:<input type="text" name="email">
+        <input type="button" value="提交">
+    </form>
+    <span class="loading">正在加载中</span>
+    <script src="./jQuery2.0.3.js"></script>
+    <script>
+        // ajax
+        // 实现无刷新的页面更新
+        
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         // 如果我什么都不传就请求当前界面
+        //         type:"POST",
+        //         url:"ajax.php",
+        //         // 这里传data的时候如果是get请求可以用之前load里面的三种形式,如果是post请求则第一个方式就用不了了
+        //         data:{
+        //             user:$("form input[name='user']").val(), // 我在传入我表单里面输入的值
+        //             email:$("form input[name='email'").val()
+        //         },
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         }
+        //     })
+        // })
+
+        // jquery里面提供了一个函数来处理我表单提交的时候传data写的时候很复杂的问题
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"ajax.php",
+        //         data:$("form").serialize(), // 我用这个函数就可以代替我之前上面的那个复杂的传值的东西,效果一样,我之后再改的时候就只需要改我选择dom的东西就好了
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         }
+        //     })
+        // })
+
+
+        // // jquery 提供了一个初始化重复属性的东西,写了这个我之后就不用再写这些重复的属性了
+        // $.ajaxSetup({
+        //     type:"POST",
+        //     url:"ajax.php",
+        // })
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         data:$("form").serialize(),
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         }
+        //     })
+        // })
+        
+
+        // // 对象形式传递键值对的情况
+        // // 有的时候我这个传进来的对象非常的复杂,我用上面的serialize()这个方法解不开了,那么可以用$.param来解开
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"ajax.php",
+        //         // 在这里调用param方法
+        //         data:$.param({
+        //             user:$("form input[name='user']").val(), 
+        //             email:$("form input[name='email'").val()
+        //         }),
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         }
+        //     })
+        // })
+
+
+
+        // // jquery提供了两个全局事件,为了在ajax发送请求的时候给用户一个提示
+        // // 防止他请求不回来用户觉得我点提交没有用,因为他本身就是无刷新页面
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"ajax.php",
+        //         data:$("form").serialize(),
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         }
+        //     })
+        // })
+
+        // // 这个ajaxStart是请求刚刚要开始的时候,其他的步骤还没有要开始执行呢,执行这个东西,注意这个事件是绑定在document上面的
+        // // 所有的事件请求都结束的时候触发一个ajaxStop事件
+        // $(document).ajaxStart(function(){
+        //     $(".loading").show();
+        // }).ajaxStop(function(){
+        //     $('.loading').hide();
+        // })
+        
+
+        // // 如果我的ajax不像触发上面的那种全局事件
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"ajax.php",
+        //         data:$("form").serialize(),
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         },
+        //         // 在ajax里面填一个global:false,
+        //         globle: false
+        //     })
+        // })
+
+
+        // // 错误处理
+        // // 第一种:我直接利用error属性
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"ajax1.php",
+        //         data:$("form").serialize(),
+        //         success:function(response, status, xhr) {
+        //             $("#box").html(response);
+        //         },
+        //         error:function(xhr, errorText, errorType){ // 他这个里面有几个属性  
+        //             alert(xhr.status+ ':' +xhr.statusText) // 状态+类型
+        //             alert(errorText+ ':' + errorType) // 提示 + 状态
+        //         }
+        //     })
+        // })
+
+
+        // 第二种
+        // 如果不是ajax请求报错是别的函数请求的报错
+        // $("form input[type='button']").click(function(){
+        //     // 直接在后面.error来执行报错之后的操作
+        //     $.post("ajax1.php").error(function(xhr, errorText, errorType){ // 参数是一样的
+        //         alert(errorText+ ':' + errorType) // 提示 + 状态
+        //     })
+        // })
+
+        // // 第三种
+        // $("form input[type='button']").click(function(){
+        //     $.post("ajax1.php");
+        //     // 直接在全局上面绑定一个错误事件,里面写错误的处理
+        //     $(document).ajaxError(function(event, xhr, settings, errorType){ // 参数不太一样
+        //         console.log(event); // 这是一个错误对象,里面可以那一些错误信息
+        //         console.log(settings) // 这也是个对象,里面有一些属性方法可以查看错误信息
+        //         console.log(errorType) // 错误类型
+        //     })
+        // })
+
+
+        // 类似第三种全局的错误事件还有三种
+        // 一个是成功后的调用
+        // 一个是完成后的调用,不管成没成功都调用
+        // 还有一个是请求开始的事件
+
+
+        
+        // 请求一个json文件
+        // $("form input[type='button']").click(function(){
+        //     $.ajax({
+        //         type:"POST",
+        //         url:"text.json",
+        //         // dataType: "html", // 这里数据类型改成html,则请求回来的不是json对象而是一个字符串,这个dataType不写就默认是请求回来的类型,一般不用写
+        //         success:function(response, status, xhr) {
+        //             console.log(response[0].url);
+        //         },
+        //     })
+        // })
+
+
+        // ajax跨域
+        $("form input[type='button']").click(function(){
+            $.ajax({
+                type:"POST",
+                url:"ajaxCrossDomain.php",
+                // 注意,当我请求的是从php里面返回的json文件的时候,我需要在这里设置文件类型为json
+                // 如果不设置的话php里面给我返回的默认是html格式的字符串
+                dataType: "json",
+                success:function(response, status, xhr) {
+                    console.log(response.a);
+                },
+            })
+        })
+    </script>
+</body>
+</html>
